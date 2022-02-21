@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+//Escrever uma função que diga qual dos dois números é maior.
+
 void maior(int a, int b){
   if (a>b){
     printf("O maior número é %d",a);

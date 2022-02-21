@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+//Escrever uma função que peça dois números e os imprima em ordem crescente.
+
 void ordem(int a, int b){
 
   if (a>b){
