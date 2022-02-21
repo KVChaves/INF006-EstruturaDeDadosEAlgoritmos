@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 void maior(int a, int b){
-  int maior2;
   if (a>b){
     printf("O maior número é %d",a);
   }
