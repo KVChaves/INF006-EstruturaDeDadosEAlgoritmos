@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,15 +11,11 @@ struct Acoes
 typedef struct Acoes acoes;
 
 float cotacoes[3] = {0, 0, 0};
-int anular = 0, resto = 0, t_resto = 0;
+int anular = 0, resto = 0, tr = 0;
 
 acoes *inicio = NULL;
 acoes *petr4v = NULL;
 acoes *petr4c = NULL;
-acoes *vale5v = NULL;
-acoes *vale5c = NULL;
-acoes *lame3v = NULL;
-acoes *lame3c = NULL;
 
 //####################################################################
 
@@ -30,7 +25,7 @@ void inserir_listaC(acoes **p, float valor, int quantidade){
     if(novo){
         novo->val = valor;
         novo->qtd = quantidade;
-        
+
         if(*p == NULL){ // a lista está vazia?
             novo->prox = NULL;
             *p = novo;
@@ -82,8 +77,7 @@ void inserir_listaV(acoes **p, float valor, int quantidade){
 
 //####################################################################
 
-acoes *compra(float Val, int Qtd , acoes *ptr, int num)
-{
+acoes *compra(float Val, int Qtd , acoes *ptr, int num){
 	acoes* busca; 
 	acoes* anterior;
 	anterior = NULL;
@@ -91,30 +85,33 @@ acoes *compra(float Val, int Qtd , acoes *ptr, int num)
 	while (busca != NULL) {
 		if (busca->val <= Val) {
       cotacoes[num] = (busca->val - Val)/2 + Val;
-      printf("\n\n\n------------------------------------\n| TRANSAÇÃO REALIZADA: %d - %.2f |\n------------------------------------\n", Qtd, cotacoes[num]);
+      printf("\n-\n-\n-\n-\n-\n-------------------------------\n| TRANSAÇÃO REALIZADA: $%.2f |\n-------------------------------\n> %.2f & %.2f\n", cotacoes[num], Val, busca->val);
       if(busca->qtd > Qtd){
         busca->qtd = busca->qtd - Qtd;
         anular = 1;
-        t_resto = 0;
+        printf("> %d\n",Qtd);
         return ptr;
       }
       else{
-        if (anterior != NULL){
+        if (anterior != NULL){ //primeiro elemento da lista
+          tr = 1;
           resto = Qtd - busca->qtd;
 				  anterior->prox = busca -> prox;
           anular = 0;
-          t_resto = 1;
+          printf("> %d", busca->qtd);
 				  return ptr;
 			  }
         else{
+          tr = 1;
           resto = Qtd - busca->qtd;
 				  ptr = busca-> prox;
           anular = 0;
-          t_resto = 1;
+          printf("> %d", busca->qtd);
 				  return ptr;
 			  };
       }
 		};
+    tr = 0;
     anular = 0;
 		anterior = busca;
 		busca = busca->prox;
@@ -124,8 +121,7 @@ acoes *compra(float Val, int Qtd , acoes *ptr, int num)
 
 //####################################################################
 
-acoes *venda(float Val, int Qtd , acoes *ptr, int num)
-{
+acoes *venda(float Val, int Qtd , acoes *ptr, int num){
 	acoes* busca; 
 	acoes* anterior;
 	anterior = NULL;
@@ -133,30 +129,34 @@ acoes *venda(float Val, int Qtd , acoes *ptr, int num)
 	while (busca != NULL) {
 		if (busca->val >= Val) {
       cotacoes[num] = (busca->val - Val)/2 + Val;
-      printf("\n\n\n------------------------------------\n| TRANSAÇÃO REALIZADA: %d - %.2f |\n------------------------------------\n", Qtd, cotacoes[num]);
+      printf("\n-\n-\n-\n-\n-\n-------------------------------\n| TRANSAÇÃO REALIZADA: $%.2f |\n-------------------------------\n> %.2f & %.2f\n", cotacoes[num], busca->val, Val);
       if(busca->qtd > Qtd){
         busca->qtd = busca->qtd - Qtd;
         anular = 1;
-        t_resto = 0;
+        printf("> %d",Qtd);
         return ptr;
       }
       else{
         if (anterior != NULL){
+          tr = 1;
           resto = Qtd - busca->qtd;
 				  anterior->prox = busca -> prox;
           anular = 0;
-          t_resto = 1;
+          printf("> %d", busca->qtd);
 				  return ptr;
 			  }
         else{
+          tr = 1;
           resto = Qtd - busca->qtd;
 				  ptr = busca-> prox;
           anular = 0;
-          t_resto = 1;
+          printf("> %d", busca->qtd);
 				  return ptr;
 			  };
       }
 		};
+    tr = 0;
+    resto = Qtd;
     anular = 0;
 		anterior = busca;
 		busca = busca->prox;
@@ -166,17 +166,21 @@ acoes *venda(float Val, int Qtd , acoes *ptr, int num)
 
 //####################################################################
 
-void consulta_ofertas(acoes* p1, acoes* p2, char* nome, int num){
+void consulta_ofertas(acoes* p1, acoes* p2, char* nome){
 	acoes *referencia;
-  printf("###############################\n");
-  printf("Cotação para %s: %.2f\n-------------------------\n",nome, cotacoes[num]);
+  printf("\n###############################\n");
+  printf("Cotação para PETR4: %.2f\n-------------------------\n",cotacoes[0]);
   printf("-- VENDA --\n\n");
 	for(referencia= p1;referencia!= NULL; referencia=referencia->prox){
-		printf("[%s | %d | %.2f]\n--------------------\n",nome, referencia->qtd, referencia->val);
+    if(referencia->qtd != 0){
+		  printf("[%s | %d | %.2f]\n--------------------\n",nome, referencia->qtd, referencia->val);
+    };
 	}
   printf("\n-- COMPRA --\n\n");
   for(referencia= p2;referencia!= NULL; referencia=referencia->prox){
-		printf("[%s | %d | %.2f]\n--------------------\n", nome, referencia->qtd, referencia->val);
+		if(referencia->qtd != 0){
+      printf("[%s | %d | %.2f]\n--------------------\n", nome, referencia->qtd, referencia->val);
+    };
 	}
   printf("###############################\n");
 }
@@ -185,7 +189,7 @@ void consulta_ofertas(acoes* p1, acoes* p2, char* nome, int num){
 
 int menu(){
   int opcao;
-  printf("\n\n___ MERCADO DE AÇÕES ___\n\n1 - Carregar ofertas via arquivo.\n2 - Criar uma oferta de compra.\n3 - Criar uma oferta de venda.\n4 - Consultar ofertas.\n5 - Sair.\n> ");
+  printf("\n\n___ MERCADO DE AÇÕES ___\n\n1 - Carregar ofertas via arquivo.\n2 - Criar uma oferta de compra.\n3 - Criar uma oferta de venda.\n4 - Consultar ofertas.\n5 - Sair.\n\n> ");
 	scanf("%d",&opcao);
 
   return opcao;
@@ -195,6 +199,7 @@ int menu(){
 
 int main() {
 	int opcao, elemento;
+  
   
 	acoes *lista;
 	lista = NULL;
@@ -218,18 +223,30 @@ int main() {
         case 1:{
           if((ofs = fopen("ocpetr4.txt","r")) != NULL) {
             fscanf(ofs,"%d%f",&qt, &vl);
-            inserir_listaC(&petr4c, vl, qt);
-            consulta_ofertas(petr4v, petr4c, "PETR4", 0);
-            getchar();
+            petr4v = compra(vl, qt, petr4v, 0);
+            if(anular == 0 && tr == 0){
+              inserir_listaC(&petr4c, vl, qt);
             }
+            else if(anular == 0 && tr == 1){
+              inserir_listaC(&petr4c, vl, resto);
+            };
+            consulta_ofertas(petr4v, petr4c, "PETR4");
+            getchar();
+          }
           fclose(ofs);
           break;
             }
         case 2:{
           if((ofs = fopen("ovpetr4.txt","r")) != NULL) {
             fscanf(ofs,"%d%f",&qt, &vl);
-            inserir_listaV(&petr4v, vl, qt);
-            consulta_ofertas(petr4v, petr4c, "PETR4", 0);
+            petr4c = venda(vl, qt, petr4c, 0);
+            if(anular == 0 && tr == 0){
+              inserir_listaV(&petr4v, vl, qt);
+            }
+            else if(anular == 0 && tr == 1){
+              inserir_listaV(&petr4v, vl, resto);
+            };
+            consulta_ofertas(petr4v, petr4c, "PETR4");
             getchar();
           }
           fclose(ofs);
@@ -242,7 +259,7 @@ int main() {
       int tit, q;
       float v;
       printf("\nDeseja comprar qual título? (Informe o número)\n");
-      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
+      printf("1 - PETR4\n> ");
       scanf("%d",&tit);
       getchar();
       printf("Informe a quantidade de ações: ");
@@ -255,41 +272,16 @@ int main() {
       switch(tit){
         case 1:{
           petr4v = compra(v, q, petr4v, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaC(&petr4c, v, resto);
-          }
-          else if(anular == 0 && t_resto == 0){
+          if(anular == 0 && tr == 0){
             inserir_listaC(&petr4c, v, q);
-          };
-          consulta_ofertas(petr4v, petr4c, "PETR4", 0);
-          getchar();
-        break;
-        }
-        case 2:{
-          vale5v = compra(v, q, vale5v, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaC(&vale5c, v, resto);
           }
-          else if(anular == 0 && t_resto == 0){
-            inserir_listaC(&vale5c, v, q);
+          else if(anular == 0 && tr == 1){
+            inserir_listaC(&petr4c, v, resto);
           };
-          consulta_ofertas(vale5v, vale5c, "VALE5", 1);
+          consulta_ofertas(petr4v, petr4c, "PETR4");
           getchar();
         break;
         }
-        case 3:{
-          lame3v = compra(v, q, lame3v, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaC(&lame3c, v, resto);
-          }
-          else if(anular == 0 && t_resto == 0){
-            inserir_listaC(&lame3c, v, q);
-          };
-          consulta_ofertas(lame3v, lame3c, "LAME3", 2);
-          getchar();
-        break;
-        }
-        
       }
       break;
     }
@@ -297,7 +289,7 @@ int main() {
       int tit, q;
       float v;
       printf("Deseja vender qual título? (Informe o número)\n");
-      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
+      printf("1 - PETR4\n> ");
       scanf("%d",&tit);
       getchar();
       printf("Informe a quantidade de ações: ");
@@ -310,37 +302,13 @@ int main() {
       switch(tit){
         case 1:{
           petr4c = venda(v, q, petr4c, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaV(&petr4v, v, resto);
-          }
-          else if(anular == 0 && t_resto == 0){
+          if(anular == 0 && tr == 0){
             inserir_listaV(&petr4v, v, q);
-          };
-          consulta_ofertas(petr4v, petr4c, "PETR4", 0);
-          getchar();
-        break;
-        }
-        case 2:{
-          vale5c = venda(v, q, vale5c, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaV(&vale5v, v, resto);
           }
-          else if(anular == 0 && t_resto == 0){
-            inserir_listaV(&vale5v, v, q);
+          else if(anular == 0 && tr == 1){
+            inserir_listaV(&petr4v, v, resto);
           };
-          consulta_ofertas(vale5v, vale5c, "VALE5", 1);
-          getchar();
-        break;
-        }
-        case 3:{
-          lame3c = venda(v, q, lame3c, 0);
-          if(anular == 0 && t_resto == 1){
-            inserir_listaV(&lame3v, v, resto);
-          }
-          else if(anular == 0 && t_resto == 0){
-            inserir_listaV(&lame3v, v, q);
-          };
-          consulta_ofertas(lame3v, lame3c, "LAME3", 2);
+          consulta_ofertas(petr4v, petr4c, "PETR4");
           getchar();
         break;
         }
@@ -350,20 +318,14 @@ int main() {
     case 4:{
       int tit;
       printf("Deseja consultar qual título? (Informe o número)\n");
-      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
+      printf("1 - PETR4\n> ");
       scanf("%d",&tit);
       getchar();
       switch(tit){
         case 1:{
-          consulta_ofertas(petr4v, petr4c, "PETR4", 0);
-          break;
-        }
-        case 2:{
-          consulta_ofertas(vale5v, vale5c, "VALE5", 1);
-          break;
-        }
-        case 3:{
-          consulta_ofertas(lame3v, lame3c, "LAME3", 2);
+          printf("\n-\n-\n-\n-\n-\n");
+          consulta_ofertas(petr4v, petr4c, "PETR4");
+          getchar();
           break;
         }
         }
