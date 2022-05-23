@@ -4,7 +4,7 @@
 
 struct Acoes
 {
-	int qtd;
+  int qtd;
   float val;
 	struct Acoes *prox;
 };
@@ -13,9 +13,12 @@ typedef struct Acoes acoes;
 float cotacoes[3] = {0, 0, 0};
 int anular = 0, resto = 0, tr = 0;
 
-acoes *inicio = NULL;
 acoes *petr4v = NULL;
 acoes *petr4c = NULL;
+acoes *vale5v = NULL;
+acoes *vale5c = NULL;
+acoes *lame3v = NULL;
+acoes *lame3c = NULL;
 
 //####################################################################
 
@@ -169,7 +172,7 @@ acoes *venda(float Val, int Qtd , acoes *ptr, int num){
 void consulta_ofertas(acoes* p1, acoes* p2, char* nome){
 	acoes *referencia;
   printf("\n###############################\n");
-  printf("Cotação para PETR4: %.2f\n-------------------------\n",cotacoes[0]);
+  printf("Cotação para %s: %.2f\n-------------------------\n", nome, cotacoes[0]);
   printf("-- VENDA --\n\n");
 	for(referencia= p1;referencia!= NULL; referencia=referencia->prox){
     if(referencia->qtd != 0){
@@ -198,12 +201,8 @@ int menu(){
 //####################################################################
 
 int main() {
-	int opcao, elemento;
+	int opcao;
   
-  
-	acoes *lista;
-	lista = NULL;
-	
   while(opcao!=5){
   opcao = menu();
   switch(opcao){
@@ -259,7 +258,7 @@ int main() {
       int tit, q;
       float v;
       printf("\nDeseja comprar qual título? (Informe o número)\n");
-      printf("1 - PETR4\n> ");
+      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
       scanf("%d",&tit);
       getchar();
       printf("Informe a quantidade de ações: ");
@@ -282,6 +281,30 @@ int main() {
           getchar();
         break;
         }
+        case 2:{
+          vale5v = compra(v, q, vale5v, 1);
+          if(anular == 0 && tr == 0){
+            inserir_listaC(&vale5c, v, q);
+          }
+          else if(anular == 0 && tr == 1){
+            inserir_listaC(&vale5c, v, resto);
+          };
+          consulta_ofertas(vale5v, vale5c, "VALE5");
+          getchar();
+        break;
+        }
+        case 3:{
+          lame3v = compra(v, q, lame3v, 2);
+          if(anular == 0 && tr == 0){
+            inserir_listaC(&lame3c, v, q);
+          }
+          else if(anular == 0 && tr == 1){
+            inserir_listaC(&lame3c, v, resto);
+          };
+          consulta_ofertas(lame3v, lame3c, "LAME3");
+          getchar();
+        break;
+        }
       }
       break;
     }
@@ -289,7 +312,7 @@ int main() {
       int tit, q;
       float v;
       printf("Deseja vender qual título? (Informe o número)\n");
-      printf("1 - PETR4\n> ");
+      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
       scanf("%d",&tit);
       getchar();
       printf("Informe a quantidade de ações: ");
@@ -312,19 +335,55 @@ int main() {
           getchar();
         break;
         }
+        case 2:{
+          vale5c = venda(v, q, vale5c, 1);
+          if(anular == 0 && tr == 0){
+            inserir_listaV(&vale5v, v, q);
+          }
+          else if(anular == 0 && tr == 1){
+            inserir_listaV(&vale5v, v, resto);
+          };
+          consulta_ofertas(vale5v, vale5c, "VALE5");
+          getchar();
+        break;
+        }
+        case 3:{
+          lame3c = venda(v, q, lame3c, 2);
+          if(anular == 0 && tr == 0){
+            inserir_listaV(&lame3v, v, q);
+          }
+          else if(anular == 0 && tr == 1){
+            inserir_listaV(&lame3v, v, resto);
+          };
+          consulta_ofertas(lame3v, lame3c, "LAME3");
+          getchar();
+        break;
+        }
       }
       break;
     }
     case 4:{
       int tit;
       printf("Deseja consultar qual título? (Informe o número)\n");
-      printf("1 - PETR4\n> ");
+      printf("1 - PETR4\n2 - VALE5\n3 - LAME3\n> ");
       scanf("%d",&tit);
       getchar();
       switch(tit){
         case 1:{
           printf("\n-\n-\n-\n-\n-\n");
           consulta_ofertas(petr4v, petr4c, "PETR4");
+          getchar();
+          break;
+        }
+        case 2:{
+          printf("\n-\n-\n-\n-\n-\n");
+          consulta_ofertas(vale5v, vale5c, "VALE5");
+          getchar();
+          break;
+        }
+        case 3:{
+          printf("\n-\n-\n-\n-\n-\n");
+          consulta_ofertas(lame3v, lame3c, "LAME3");
           getchar();
           break;
         }
